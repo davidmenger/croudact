@@ -12,6 +12,7 @@ h1, h2, h3, h4, h5, strong, b {
     border-color: transparent;
     color: #fff;
     margin: 5px;
+    font-size: 1.2em;
     &:hover {
         background-color:black;
     }
@@ -69,6 +70,22 @@ div.hero-body {
     padding-bottom: 0;
 }
 
+.logincontainer {
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 9px 2px;
+    border-radius: 5px;
+    min-height: 70vh;
+    max-width: 600px;
+    width: 50%;
+    height: 94%;
+    max-height: 80vh;
+    margin: 3% auto 3% auto;
+    position: absolute;
+    z-index: 2;
+    right: 20px;
+    background: #ffffff;
+}
+
+
 .chatcontainer {
     box-shadow: rgba(0, 0, 0, 0.08) 0px 2px 9px 2px;
     border-radius: 5px;
@@ -93,7 +110,22 @@ div.hero-body {
         bottom: 0;
         margin-bottom: 0;
     }
-  }
+
+    .logincontainer {
+        width: 100%;
+        margin-right: 0;
+        max-height: 90%;
+        right: 0;
+        bottom: 0;
+        margin-bottom: 0;
+    }
+}
+
+.loginContent {
+    margin-top: 25%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
 
 iframe.chat {
     width: 100%;
@@ -157,7 +189,7 @@ h1, h2, .content h1, .content h2 {
     fill: #dbc153;    
 }
 
-#landing-menu {
+.landing-menu {
     position: absolute; 
     z-index: 2;
     bottom: 30px;
