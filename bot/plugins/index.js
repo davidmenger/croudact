@@ -117,7 +117,7 @@ plugins.register('sendMoney', async (req, res) => {
     const db = await mongodb();
     const c = db.collection('places');
 
-    const place = await c.findOneAndUpdate({
+    let place = await c.findOneAndUpdate({
         _id: new ObjectID(id)
     }, {
         $set: {
@@ -133,13 +133,15 @@ plugins.register('sendMoney', async (req, res) => {
         return;
     }
 
+    place = place.value;
+
     const { senderId, pageId } = place.creator;
 
     // eslint-disable-next-line global-require
     const { channel } = require('../../bot');
 
     const paymentSent = Request.postBack(senderId, PAYMENT_SENT, { amount, id });
-    channel.processMessage(paymentSent, senderId, pageId);
+    await channel.processMessage(paymentSent, senderId, pageId);
 });
 
 plugins.register('createRequest', async (req, res) => {
@@ -168,7 +170,7 @@ plugins.register('createRequest', async (req, res) => {
     const { channel } = require('../../bot');
 
     const act = Request.postBack(senderId, BUY_REQUEST_CREATED, { requestText, id });
-    channel.processMessage(act, senderId, pageId);
+    await channel.processMessage(act, senderId, pageId);
 });
 
 plugins.register('approveRequest', async (req, res) => {
@@ -197,7 +199,7 @@ plugins.register('approveRequest', async (req, res) => {
     const { channel } = require('../../bot');
 
     const act = Request.postBack(senderId, BUY_REQUEST_APPROVED, { requestText, id });
-    channel.processMessage(act, senderId, pageId);
+    await channel.processMessage(act, senderId, pageId);
 });
 
 module.exports = plugins;

@@ -82,6 +82,9 @@ class App extends Component {
                 });
         } else if (id || lat || lon) {
             this._showWidget();
+            window.localStorage.removeItem('lat');
+            window.localStorage.removeItem('lon');
+            window.localStorage.removeItem('id');
         }
     }
 
