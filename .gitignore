@@ -12,5 +12,9 @@ node_modules
 .nyc_output
 /html-report
 
+/dist/styles
+/dist/*.js
+/dist/*.js.gz
+
 # Wingbot configuration log
 # .wingbot
