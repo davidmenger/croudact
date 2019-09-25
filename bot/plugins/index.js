@@ -136,6 +136,8 @@ plugins.register('sendMoney', async (req, res) => {
             }
         },
         $inc: { credit: amount }
+    }, {
+        returnOriginal: false
     });
 
     if (!place) {

@@ -3,7 +3,6 @@
  */
 
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import L from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 
@@ -82,10 +81,15 @@ class App extends Component {
                 });
         } else if (id || lat || lon) {
             this._showWidget();
-            window.localStorage.removeItem('lat');
-            window.localStorage.removeItem('lon');
-            window.localStorage.removeItem('id');
         }
+
+        window.localStorage.removeItem('lat');
+        window.localStorage.removeItem('lon');
+        window.localStorage.removeItem('id');
+
+        setInterval(() => {
+            this._fetchPlaces();
+        }, 5000);
     }
 
     componentDidUpdate (prevProps, { id: prevId, lat: prevLat, token: prevToken }) {
