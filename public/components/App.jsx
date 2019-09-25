@@ -180,8 +180,9 @@ class App extends Component {
         const { showLogin, token } = this.state;
 
         return (
-            <div>
+            <div id="landing-menu">
                 <button
+                    id="create-button"
                     type="button"
                     onClick={() => this.onCreate()}
                     className="button is-primary"
