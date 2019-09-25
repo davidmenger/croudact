@@ -8,9 +8,9 @@ h1, h2, h3, h4, h5, strong, b {
 .button.is-primary {
     font-family: 'Space Mono', Arial, Helvetica, sans-serif;
     font-weight: bold;
-    background-color: #dbc153;
+    background-color: #04EA00;
     border-color: transparent;
-    color: #fff;
+    color: black;
     margin: 5px;
     font-size: 1.2em;
     &:hover {
@@ -121,6 +121,14 @@ div.hero-body {
     }
 }
 
+.wc-upload svg {
+    visibility: hidden;
+}
+
+.wc-console.has-upload-button .wc-textbox {
+    left: 10px;
+}
+
 .loginContent {
     margin-top: 25%;
     margin-left: 10%;
@@ -186,7 +194,7 @@ h1, h2, .content h1, .content h2 {
 }
 
 .wc-message-from-me .wc-message-content {
-    background-color: #dbc153;
+    background-color: black;
 }
 
 .leaflet-marker-icon {
@@ -194,7 +202,7 @@ h1, h2, .content h1, .content h2 {
 }
 
 .wc-message-from-me svg.wc-message-callout path {
-    fill: #dbc153;
+    fill: black;
 }
 
 .landing-menu {
