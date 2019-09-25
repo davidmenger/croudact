@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import L from 'leaflet'
+import L from 'leaflet';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 
 class App extends Component {
@@ -135,15 +135,21 @@ class App extends Component {
     }
 
     _setShow (id, lat = null, lon = null) {
+        const { token } = this.state;
+
         if (id) {
             this.setState({ id, lat: null, lon: null });
-            window.localStorage.setItem('id', id);
+            if (!token) {
+                window.localStorage.setItem('id', id);
+            }
             window.localStorage.removeItem('lat');
             window.localStorage.removeItem('lon');
         } else if (lat && lon) {
             this.setState({ id: null, lat, lon });
-            window.localStorage.setItem('lat', lat);
-            window.localStorage.setItem('lon', lon);
+            if (!token) {
+                window.localStorage.setItem('lat', lat);
+                window.localStorage.setItem('lon', lon);
+            }
             window.localStorage.removeItem('id');
         } else {
             this.setState({ id: null, lat: null, lon: null });

@@ -8,8 +8,10 @@
     {
       "id": "loadPlace",
       "name": "Načíst místo",
-      "description": "lat, lon, name, placeTypeText, placeType, goal",
-      "items": []
+      "description": "lat, lon, name, placeTypeText, placeType, goal, credit",
+      "items": [
+          { "id": "yourplace", "description": "if it's your place" }
+      ]
     },
     {
       "id": "loadUser",

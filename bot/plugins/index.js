@@ -21,7 +21,7 @@ plugins.register('loadPlace', async (req, res) => {
 
     if (!id) {
         res.text('no id');
-        return;
+        return null;
     }
 
     const db = await mongodb();
@@ -34,7 +34,13 @@ plugins.register('loadPlace', async (req, res) => {
     if (place) {
         delete place._id;
         res.setState(place);
+
+        if (place.creator.senderId === req.senderId) {
+            await res.run('yourplace');
+            return null;
+        }
     }
+    return undefined;
 });
 
 plugins.register('createPlace', async (req) => {
@@ -59,8 +65,9 @@ plugins.register('createPlace', async (req) => {
         placeTypeText,
         placeType,
         goal,
+        credit: 0,
         creator: { senderId, pageId },
-        contributor: null
+        contributors: []
     });
 
 });
@@ -68,6 +75,7 @@ plugins.register('createPlace', async (req) => {
 plugins.register('loadUser', async (req, res) => {
     const { refresh } = Object.assign({}, req.state, res.newState);
 
+    res.typingOn();
     if (!refresh) {
         return;
     }
@@ -104,6 +112,7 @@ plugins.register('loadUser', async (req, res) => {
 plugins.register('sendMoney', async (req, res) => {
     const { id } = req.state;
     let { amount } = req.params;
+    res.typingOn();
 
     if (!amount) {
         ({ amount } = req.state);
@@ -120,12 +129,13 @@ plugins.register('sendMoney', async (req, res) => {
     let place = await c.findOneAndUpdate({
         _id: new ObjectID(id)
     }, {
-        $set: {
-            contributor: {
+        $push: {
+            contributors: {
                 senderId: req.senderId,
                 pageId: req.pageId
             }
-        }
+        },
+        $inc: { credit: amount }
     });
 
     if (!place) {
@@ -146,6 +156,7 @@ plugins.register('sendMoney', async (req, res) => {
 
 plugins.register('createRequest', async (req, res) => {
     const { id, requestText } = req.state;
+    res.typingOn();
 
     if (!id) {
         res.text('no id');
@@ -155,26 +166,43 @@ plugins.register('createRequest', async (req, res) => {
     const db = await mongodb();
     const c = db.collection('places');
 
-    const place = await c.findOne({
+    const placeData = await c.findOneAndUpdate({
         _id: new ObjectID(id)
+    }, {
+        $set: {
+            contributors: [],
+            credit: 0
+        }
+    }, {
+        returnOriginal: true
     });
 
-    if (!place || !place.contributor) {
+    if (!placeData.value) {
         res.text('no place');
         return;
     }
 
-    const { senderId, pageId } = place.contributor;
+    const place = placeData.value;
+
+    const to = new Set(place.contributors
+        .map(co => co.senderId));
 
     // eslint-disable-next-line global-require
     const { channel } = require('../../bot');
 
-    const act = Request.postBack(senderId, BUY_REQUEST_CREATED, { requestText, id });
-    await channel.processMessage(act, senderId, pageId);
+    await Promise.all(Array.from(to.values())
+        .map(senderId => channel
+            .processMessage(
+                Request
+                    .postBack(senderId, BUY_REQUEST_CREATED, { requestText, id }),
+                senderId,
+                req.pageId
+            )));
 });
 
 plugins.register('approveRequest', async (req, res) => {
     const { id, requestText } = req.state;
+    res.typingOn();
 
     if (!id) {
         res.text('no id');
@@ -188,7 +216,7 @@ plugins.register('approveRequest', async (req, res) => {
         _id: new ObjectID(id)
     });
 
-    if (!place || !place.contributor) {
+    if (!place) {
         res.text('no place');
         return;
     }
