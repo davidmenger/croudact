@@ -92,9 +92,9 @@ class App extends Component {
 
         if (!token || (!id && !lat)) {
             this._hideWidget();
-        } else if (id && (!prevId || !prevToken)) {
+        } else if (id && (id !== prevId || !prevToken)) {
             this._showWidget();
-        } else if (lat && (!prevLat || !prevToken)) {
+        } else if (lat && (lat !== prevLat || !prevToken)) {
             this._showWidget();
         }
     }
@@ -185,7 +185,7 @@ class App extends Component {
 
     _createIcon (place) {
         return new L.Icon({
-            iconUrl: `/img/${place.placeType}.png`,
+            iconUrl: `/img/t_${place.placeType}.png`,
 
             iconSize: [50, 50], // size of the icon
             iconAnchor: [25, 25], // point of the icon which will correspond to marker's location

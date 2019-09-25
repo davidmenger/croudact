@@ -157,6 +157,10 @@ h1, h2, .content h1, .content h2 {
     background-color: #dbc153;
 }
 
+.leaflet-marker-icon {
+    cursor: pointer;
+}
+
 .wc-message-from-me svg.wc-message-callout path {
     fill: #dbc153;
 }
