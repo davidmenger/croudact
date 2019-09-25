@@ -40,30 +40,11 @@
         <div class="hero-body">
             <div class="columns has-iframe">
                 <div class="column has-gray-bg">
-                    <div class="top-frame">
-                        <div class="bg"></div>
-                        <div class="content">
-                            <h1>
-                                Wingbot chatbot
-                            </h1>
-                        </div>
-                    </div>
-
-                    <div class="text-frame">
-                        <div class="content">
-                            <h2>
-                                Effective chatbot environment for enterprise
-                            </h2>
-                            <ul>
-                                <li><a href="https://wingbot.ai">wingbot.ai</a></li>
-                                <li><a href="https://github.com/wingbotai">wingbot.ai github</a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div id="app"></div>
                 </div>
                 <div class="column has-chat">
                     <!-- BOTSERVICE WEBCHAT -->
-                    <div class="chatcontainer">
+                    <div class="chatcontainer" style="display:none;">
                         <div class="framewrap">
                             <div id="webchat" class="chat"></div>
                             <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat-es5.js"></script>
@@ -89,6 +70,8 @@
                                 }, {
                                     resize: 'detect'
                                 }, document.getElementById('webchat'));
+
+                                window.directLine = directLine;
 
                                 var ref = (window.location.search || '')
                                     .match(/ref=([^&]+)/);

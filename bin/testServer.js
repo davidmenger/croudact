@@ -43,6 +43,6 @@ app.use('/api', bodyParser.text({ type: () => true }), api);
 
 const server = http.createServer(app);
 
-server.listen(3000, () => {
-    console.log('Example app listening on port 3000!'); // eslint-disable-line
+server.listen(80, () => {
+    console.log('Example app listening on port 80!'); // eslint-disable-line
 });

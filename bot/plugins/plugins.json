@@ -1,0 +1,7 @@
+[
+    {
+      "id": "createPlace",
+      "name": "Vytvořit místo",
+      "description": "lat, lon, name"
+    }
+]

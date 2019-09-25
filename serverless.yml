@@ -95,6 +95,12 @@ functions:
       - http: GET /bot
       - http: POST /bot
 
+  placesList:
+    handler: routes/bot.handler
+    memorySize: 128
+    events:
+      - http: GET /places
+
   wingbotApi:
     handler: routes/api.handler
     memorySize: 192

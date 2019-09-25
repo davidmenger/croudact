@@ -1,0 +1,16 @@
+[
+    {
+      "id": "exampleBlock",
+      "name": "example block name",
+      "description": "example block description text",
+      "inputs": [
+        { "type": "text", "name": "text", "label": "Text" },
+        { "type": "select", "name": "sl", "label": "Select", "options": [
+          { "value": "val", "label": "lab" }
+        ] }
+      ],
+      "items": [
+        { "id": "responseBlockName", "description": "optional description" }
+      ]
+    }
+  ]
