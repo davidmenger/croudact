@@ -4,6 +4,8 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import L from 'leaflet'
+import { Map, TileLayer, Marker } from 'react-leaflet';
 
 class App extends Component {
 
@@ -32,19 +34,25 @@ class App extends Component {
 
         this.state = {
             showLogin: false,
+            create: false,
             lat,
             lon,
             id,
             code,
             token,
-            refresh
+            refresh,
+            places: []
         };
+
+        this.onMapClick = this.onMapClick.bind(this);
     }
 
     componentDidMount () {
         const {
             code, lat, lon, id
         } = this.state;
+
+        this._fetchPlaces();
 
         if (code) {
             const body = new URLSearchParams();
@@ -100,13 +108,23 @@ class App extends Component {
         this._setShow(id);
     }
 
-    onCreate (lat = 1, lon = 1) {
-        const { token } = this.state;
+    onCreate () {
+        this.setState({ create: true });
+    }
+
+    onMapClick ({ latlng }) {
+        const { token, create } = this.state;
+
+        if (!create) {
+            return;
+        }
 
         if (!token) {
-            this.setState({ showLogin: true });
+            this.setState({ showLogin: true, create: false });
+        } else {
+            this.setState({ create: false });
         }
-        this._setShow(null, lat, lon);
+        this._setShow(null, latlng.lat, latlng.lng);
     }
 
     onSignOut () {
@@ -165,6 +183,30 @@ class App extends Component {
         }
     }
 
+    _createIcon (place) {
+        return new L.Icon({
+            iconUrl: `/img/${place.placeType}.png`,
+
+            iconSize: [50, 50], // size of the icon
+            iconAnchor: [25, 25], // point of the icon which will correspond to marker's location
+            popupAnchor: [0, -25] // point from which the p
+        });
+    }
+
+    _fetchPlaces () {
+        const isLocal = window.location.href.match(/local/);
+
+        const url = isLocal
+            ? '/api/places'
+            : 'https://croudact-api.flyto.cloud/places';
+
+        fetch(url)
+            .then(r => r.json())
+            .then(({ data }) => {
+                this.setState({ places: data });
+            });
+    }
+
     renderLogin () {
         const redirectUri = window.location.href.replace(/\?.+$/, '');
 
@@ -181,36 +223,52 @@ class App extends Component {
     }
 
     render () {
-        const { showLogin, token } = this.state;
+        const {
+            showLogin, token, places, create
+        } = this.state;
 
         return (
-            <div id="landing-menu">
-                <button
-                    id="create-button"
-                    type="button"
-                    onClick={() => this.onCreate()}
-                    className="button is-primary"
-                >
-                    create
-                </button>
-                <button
-                    type="button"
-                    onClick={() => this.onSelect()}
-                    className="button is-primary"
-                >
-                    select
-                </button>
-                {token && (
+            <>
+                <div id="map" className={create ? 'cursor-target' : ''}>
+                    <Map
+                        center={[50.0775048, 14.4119297]}
+                        zoom={15}
+                        onClick={this.onMapClick}
+                    >
+                        <TileLayer
+                            url="http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
+                        />
+                        {places.map(place => (
+                            <Marker
+                                id={place.id}
+                                position={[place.lat, place.lon]}
+                                icon={this._createIcon(place)}
+                                onClick={() => this.onSelect(place.id)}
+                            />
+                        ))}
+                    </Map>
+                </div>
+                <div id="landing-menu">
                     <button
+                        id="create-button"
                         type="button"
-                        onClick={() => this.onSignOut()}
+                        onClick={() => this.onCreate()}
                         className="button is-primary"
                     >
-                        sign out
+                        create
                     </button>
-                )}
-                {showLogin && this.renderLogin()}
-            </div>
+                    {token && (
+                        <button
+                            type="button"
+                            onClick={() => this.onSignOut()}
+                            className="button is-primary"
+                        >
+                            sign out
+                        </button>
+                    )}
+                    {showLogin && this.renderLogin()}
+                </div>
+            </>
         );
     }
 

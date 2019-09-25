@@ -13,16 +13,14 @@ module.exports.list = wrapRoute(async () => {
     const db = await mongodb();
     const c = db.collection('places');
 
-    const data = await c.find()
+    const data = await c.find({})
         .toArray();
 
     return {
         statusCode: 200,
-        headers: {
-            'Content-Type': 'text/plain'
-        },
-        body: {
+        body: JSON.stringify({
             data: data.map(d => ({ ...d, id: d._id.toString() }))
-        }
+        }),
+        headers: { 'Content-Type': 'application/json' }
     };
 });

@@ -22,6 +22,8 @@ const config = {
         appSecret: process.env.BOT_APP_PASSWORD || 'tOAzdw0[tmfiHFifwtmMi0ayG61c=V+_'
     },
 
+    cors: process.env.CORS || '*',
+
     wingbot: {
         bot: 'croudact',
         botId: '8f1c791f-398a-435a-a661-ee9ffae54439',

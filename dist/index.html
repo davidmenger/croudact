@@ -13,8 +13,7 @@
     <!-- BOTSERVICE CSS -->
     <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"/>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <link rel="stylesheet" href="/leaflet.css"/>
 </head>
 
 <body>
@@ -55,11 +54,7 @@
         <div class="hero-body">
             <div class="columns has-iframe">
 
-                <div id="map"></div>
-
-                <div class="column has-gray-bg">
-                    <div id="app"></div>
-                </div>
+                <div id="app"></div>
                 <div class="column has-chat">
                     <!-- BOTSERVICE WEBCHAT -->
                     <div class="chatcontainer" style="display:none;">
@@ -111,38 +106,7 @@
             </div>
         </div>
     </section>
-    <script src="/main.bundle.js?a=2"></script>
-
-    <script>
-        // Creating map options
-        var mapOptions = {
-            center: [50.0775048, 14.4119297],
-            zoom: 15
-        }
-
-        var gardenIcon = L.icon({
-            iconUrl: 'https://github.com/iamcal/emoji-data/blob/master/img-apple-64/1f34f.png?raw=true',
-
-            iconSize:     [50, 50], // size of the icon
-            iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
-            popupAnchor:  [0, -25] // point from which the popup should open relative to the iconAnchor
-        });
-
-        // Creating a map object
-        var map = new L.map('map', mapOptions);
-        // Creating a Layer object
-            var layer = new L.TileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png');
-        // Adding layer to the map
-        map.addLayer(layer);
-        //var marker = L.marker([50.0778, 14.41306]);    // Creating a Marker
-        //marker.addTo(map); // Adding marker to the map
-        L.marker([50.0778, 14.41306], {icon: gardenIcon}).addTo(map);
-        function onMapClick(e) {
-            alert("You clicked the map at " + e.latlng);
-            // NEW MARKER: var geoLocation = new L.Marker([e.latlng.lat, e.latlng.lng]).addTo(map);
-        }
-        map.on("click", onMapClick);
-    </script>
+    <script src="/main.bundle.js?a=5"></script>
 </body>
 
 </html>

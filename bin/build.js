@@ -88,7 +88,7 @@ console.log('Cleaning up dist dir');
 const files = fs.readdirSync(distPath);
 
 for (const file of files) {
-    if (file.match(/\.(js|css|map)(\.gz)?$/) && !file.match(/[^.]+\.[a-f0-9]+\.chunk/)) {
+    if (file.match(/\.(js|css|map)(\.gz)?$/) && !file.match(/[^.]+\.[a-f0-9]+\.chunk|leaflet/)) {
         // console.log(`rm ${path.join(distPath, file)}`);
         fs.unlinkSync(path.join(distPath, file));
     }

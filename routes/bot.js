@@ -54,6 +54,7 @@ module.exports.handler = wrapRoute(async (event) => {
         await channel.verifyRequest(event.body, event.headers);
         invokeEvent = { parsedBody };
     }
+
     await lambda.invoke({
         FunctionName: SEND_MESSAGE_LAMBDA_NAME,
         Payload: JSON.stringify(invokeEvent),
