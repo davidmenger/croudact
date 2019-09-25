@@ -220,13 +220,20 @@ class App extends Component {
         const redirectUri = window.location.href.replace(/\?.+$/, '');
 
         return (
-            <div>
-                <a
-                    className="button is-primary"
-                    href={`https://webapi.developers.erstegroup.com/api/csas/sandbox/v1/sandbox-idp/auth?redirect_uri=${encodeURIComponent(redirectUri)}&client_id=c1ea98f3-9920-4531-ae58-02848694cfe1&response_type=code&code=csas-auth&access_type=offline`}
-                >
-                    login
-                </a>
+            <div className="logincontainer">
+                <div className="loginContent">
+                    <h2 style={{ fontWeight: 'bold' }}>
+                        To start making public places better, please login with your bank account.
+                    </h2>
+                </div>
+                <div className="loginContent">
+                    <a
+                        className="button is-primary"
+                        href={`https://webapi.developers.erstegroup.com/api/csas/sandbox/v1/sandbox-idp/auth?redirect_uri=${encodeURIComponent(redirectUri)}&client_id=c1ea98f3-9920-4531-ae58-02848694cfe1&response_type=code&code=csas-auth&access_type=offline`}
+                    >
+                        login
+                    </a>
+                </div>
             </div>
         );
     }
@@ -257,38 +264,32 @@ class App extends Component {
                         ))}
                     </Map>
                 </div>
-                <div id="landing-menu">
-                    <button
-                        id="create-button"
-                        type="button"
-                        onClick={() => this.onCreate()}
-                        className="button is-primary"
-                    >
-                        create
-                    </button>
-                    {token && (
+                <div>
+                    <div className="landing-menu">
                         <button
+                            id="create-button"
                             type="button"
-                            onClick={() => this.onSignOut()}
+                            onClick={() => this.onCreate()}
                             className="button is-primary"
                         >
-                            sign out
+                            create
                         </button>
-                    )}
-                    {showLogin && this.renderLogin()}
+                        {token && (
+                            <button
+                                type="button"
+                                onClick={() => this.onSignOut()}
+                                className="button is-primary"
+                            >
+                                sign out
+                            </button>
+                        )}
+                    </div>
                 </div>
+                {showLogin && this.renderLogin()}
             </>
         );
     }
 
 }
-
-App.propTypes = {
-    t: PropTypes.func
-};
-
-App.defaultProps = {
-    t: w => w
-};
 
 export default App;
