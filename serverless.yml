@@ -1,0 +1,223 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: croudact
+
+plugins:
+  - serverless-s3-sync
+
+custom:
+  accountId: 447546092489
+  company: croudact
+  stage: ${opt:stage, self:provider.stage}
+  prefix: ${self:service}-${self:custom.stage}
+  bucket:
+    production: croudact.flyto.cloud
+  certificate:
+    production: arn:aws:acm:us-east-1:447546092489:certificate/fc7143f8-435d-4701-b2a9-262a3a846093
+  cors: https://${self:custom.bucket.${self:custom.stage}}
+  certArn: ${self:custom.certificate.${self:custom.stage}}
+  s3Sync:
+    - bucketName: ${self:custom.bucket.${self:custom.stage}}
+      localDir: dist
+      acl: public-read
+      params:
+        - "*.plist":
+            ContentType: text/xml
+        - "*.png":
+            ContentType: image/png
+        - "*.jpg":
+            ContentType: image/jpeg
+        - "*.gif":
+            ContentType: image/gif
+        - "*.html":
+            ContentType: text/html
+        - "*.css":
+            ContentType: text/css
+        - "*.js":
+            ContentType: text/javascript
+        - "*.mp4":
+            ContentType: video/mp4
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-central-1
+  stage: production
+  memorySize: 256
+
+  stackTags: # Optional CF stack tags
+    Company: ${self:custom.company}
+
+  iamRoleStatements: # permissions for all of your functions can be set here
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+      Resource:
+        - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:${self:custom.prefix}-send"
+
+  environment:
+    PREFIX: ${self:custom.prefix}
+    NODE_ENV: ${self:custom.stage}
+    CORS: ${self:custom.cors}
+
+package:
+  exclude:
+    - .vscode/**
+    - bin/**
+    - dist/**
+    - public/**
+    - test/**
+    - coverage/**
+    - .eslintrc
+    - mocha.opts
+    - circle.ymp
+    - jsconfig.json
+    - webpack.config.js
+    - .npmignore
+    - node_modules/aws-sdk/dist/aws-sdk-react-native.js
+    - node_modules/.cache/**
+
+functions:
+  bot:
+    handler: routes/bot.handler
+    memorySize: 128
+    events:
+      - http: GET /bot
+      - http: POST /bot
+
+  wingbotApi:
+    handler: routes/api.handler
+    memorySize: 192
+    timeout: 30
+    role: DeployRole
+    events:
+      - http: POST /api
+
+  send:
+    handler: routes/send.handler
+    memorySize: 192
+    timeout: 90
+
+
+resources:
+  Conditions:
+    ProductionResources:
+      Fn::Equals:
+        - ${opt:stage}
+        - production
+
+  Resources:
+
+    DeployRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+
+        Path: '/'
+        RoleName: ${self:custom.prefix}-${self:provider.region}-deployBotRole
+        Policies:
+          - PolicyName: ${self:custom.prefix}-deployBotPolicy
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "lambda:InvokeFunction"
+                  Resource:
+                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:${self:custom.prefix}-send"
+                - Effect: Allow
+                  Action:
+                    - "logs:CreateLogGroup"
+                    - "logs:CreateLogStream"
+                  Resource:
+                    - 'arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/${self:custom.prefix}-wingbotApi:*'
+                - Effect: Allow
+                  Action:
+                    - "logs:PutLogEvents"
+                  Resource:
+                    - 'arn:aws:logs:${self:provider.region}:${self:custom.accountId}:log-group:/aws/lambda/${self:custom.prefix}-wingbotApi:*:*'
+                - Effect: Allow
+                  Action:
+                    - "lambda:GetFunctionConfiguration"
+                    - "lambda:UpdateFunctionConfiguration"
+                  Resource:
+                    - "arn:aws:lambda:${self:provider.region}:${self:custom.accountId}:function:${self:custom.prefix}-send"
+
+    ContentBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket.${self:custom.stage}}
+        Tags:
+          - Key: Company
+            Value: ${self:custom.company}
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+            - AllowedMethods:
+                - GET
+              AllowedOrigins:
+                - '*'
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+
+    ## Specifying the CloudFront Distribution to server your Web Application
+    WebAppCloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        Tags:
+          - Key: Company
+            Value: ${self:custom.company}
+        DistributionConfig:
+          PriceClass: PriceClass_100
+          Origins:
+            - DomainName: ${self:custom.bucket.${self:custom.stage}}.s3-website.${self:provider.region}.amazonaws.com
+              Id: WebApp
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only
+          Enabled: 'true'
+          Aliases:
+            - ${self:custom.bucket.${self:custom.stage}}
+          DefaultRootObject: index.html
+          CustomErrorResponses:
+            - ErrorCode: 404
+              ResponseCode: 404
+              ResponsePagePath: /error.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - GET
+              - HEAD
+            MinTTL: 60
+            TargetOriginId: WebApp
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+              Headers:
+                - Origin
+                - Access-Control-Request-Method
+                - Access-Control-Request-Headers
+            ViewerProtocolPolicy: redirect-to-https
+          ViewerCertificate:
+            AcmCertificateArn: ${self:custom.certArn}
+            SslSupportMethod: sni-only

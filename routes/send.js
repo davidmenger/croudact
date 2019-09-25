@@ -1,0 +1,31 @@
+/*
+ * @author wingbot.ai
+ */
+'use strict';
+
+const wrapRoute = require('../lib/wrapRoute');
+const { channel } = require('../bot');
+
+function waitFn (ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
+module.exports.handler = wrapRoute(async (event) => {
+    const {
+        message, senderId, pageId, parsedBody, wait = 0
+    } = event;
+
+    if (wait) {
+        await waitFn(wait);
+    }
+
+    if (parsedBody) {
+        await channel.processEvent(parsedBody);
+    } else {
+        await channel.processMessage(message, senderId, pageId);
+    }
+
+    return {
+        ok: 1
+    };
+});
