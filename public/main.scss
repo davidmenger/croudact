@@ -153,6 +153,14 @@ h1, h2, .content h1, .content h2 {
     cursor: crosshair;
 }
 
+.wc-message-from-me .wc-message-content {
+    background-color: #dbc153;
+}
+
+.wc-message-from-me svg.wc-message-callout path {
+    fill: #dbc153;
+}
+
 #landing-menu {
     position: absolute;
     z-index: 2;
