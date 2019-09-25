@@ -21,6 +21,8 @@ module.exports.list = wrapRoute(async () => {
         headers: {
             'Content-Type': 'text/plain'
         },
-        body: { data }
+        body: {
+            data: data.map(d => ({ ...d, id: d._id.toString() }))
+        }
     };
 });

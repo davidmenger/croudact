@@ -152,12 +152,16 @@ class App extends Component {
         const wc = document.querySelector('.chatcontainer');
         wc.style.display = 'block';
 
-        const { id, lat, lon } = this.state;
+        const {
+            id, lat, lon, token, refresh
+        } = this.state;
 
         if (id) {
-            window.directLine.postBack('contribution/introduction', { id });
+            window.directLine.postBack('contribution/introduction', { id, token, refresh });
         } else {
-            window.directLine.postBack('start', { lat, lon });
+            window.directLine.postBack('start', {
+                lat, lon, token, refresh
+            });
         }
     }
 

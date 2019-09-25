@@ -2,6 +2,37 @@
     {
       "id": "createPlace",
       "name": "Vytvořit místo",
-      "description": "lat, lon, name"
+      "description": "lat, lon, name",
+      "items": []
+    },
+    {
+      "id": "loadPlace",
+      "name": "Načíst místo",
+      "description": "lat, lon, name, placeTypeText, placeType, goal",
+      "items": []
+    },
+    {
+      "id": "loadUser",
+      "name": "Načíst usera",
+      "description": "description",
+      "items": []
+    },
+    {
+        "id": "sendMoney",
+        "name": "Poslat peníze",
+        "description": "id, amount => amount, id",
+        "items": []
+    },
+    {
+        "id": "createRequest",
+        "name": "Vytvořit dotaz",
+        "description": "id, requestText => requestText, id",
+        "items": []
+    },
+    {
+        "id": "approveRequest",
+        "name": "Vytvořit dotaz",
+        "description": "id, requestText => requestText, id",
+        "items": []
     }
 ]
