@@ -22,14 +22,15 @@ class App extends Component {
             }, {});
 
         const {
-            code
+            code,
+            placeId
         } = query;
 
         const token = window.localStorage.getItem('token');
         const refresh = window.localStorage.getItem('refresh');
         const lat = window.localStorage.getItem('lat');
         const lon = window.localStorage.getItem('lon');
-        const id = window.localStorage.getItem('id');
+        const id = placeId || window.localStorage.getItem('id');
 
         this.state = {
             showLogin: false,
